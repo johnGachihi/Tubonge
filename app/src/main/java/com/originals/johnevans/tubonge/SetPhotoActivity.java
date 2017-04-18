@@ -99,7 +99,7 @@ public class SetPhotoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            Picasso.with(getApplicationContext()).load(uri1).resize(50, 50).centerCrop().into(setPhoto);
+            Picasso.with(getApplicationContext()).load(uri1).into(setPhoto);
         }
         File imageFile = new File(uri1.getPath());
         Bitmap image = BitmapFactory.decodeFile(imageFile.getAbsolutePath());

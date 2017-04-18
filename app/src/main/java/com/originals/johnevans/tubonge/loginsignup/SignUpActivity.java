@@ -1,5 +1,6 @@
 package com.originals.johnevans.tubonge.loginsignup;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.originals.johnevans.tubonge.R;
+import com.originals.johnevans.tubonge.SetPhotoActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,6 +85,7 @@ public class SignUpActivity extends AppCompatActivity
                     boolean state = jsonObject.getBoolean("error");
                     if (!state) {
                         Toast.makeText(getApplicationContext(), "you have been registered", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SignUpActivity.this, SetPhotoActivity.class));
                     } else {
                         String error_message = jsonObject.getString("error_message");
                         Toast.makeText(getApplicationContext(), error_message, Toast.LENGTH_SHORT).show();

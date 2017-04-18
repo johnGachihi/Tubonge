@@ -96,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
                         editor.apply();
                         Log.e("userid", preferences.getString("userid", null));
                         Toast.makeText(getApplicationContext(), "Login by: " + user_firstname, Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, SetPhotoActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, InterestsActivity.class);
                         startActivity(intent);
                     } else {
                         String error_message = jsonObject.getString("error_message");
