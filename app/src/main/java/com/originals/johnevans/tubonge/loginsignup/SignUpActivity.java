@@ -1,6 +1,7 @@
 package com.originals.johnevans.tubonge.loginsignup;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,7 +85,12 @@ public class SignUpActivity extends AppCompatActivity
                     JSONObject jsonObject = new JSONObject(response);
                     boolean state = jsonObject.getBoolean("error");
                     if (!state) {
-                        Toast.makeText(getApplicationContext(), "you have been registered", Toast.LENGTH_SHORT).show();
+                        String userid = jsonObject.getString("userid");
+                        Toast.makeText(getApplicationContext(), "you have been registered  "+userid, Toast.LENGTH_SHORT).show();
+                        SharedPreferences preferences = getSharedPreferences("user_pref",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putString("userid", userid);
+                        editor.apply();
                         startActivity(new Intent(SignUpActivity.this, SetPhotoActivity.class));
                     } else {
                         String error_message = jsonObject.getString("error_message");

@@ -10,7 +10,7 @@ import com.originals.johnevans.tubonge.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-public class InterestsActivity extends AppCompatActivity implements Target {
+public class InterestsActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,20 +18,6 @@ public class InterestsActivity extends AppCompatActivity implements Target {
         setContentView(R.layout.activity_interests);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setIcon(R.drawable.ble);
-    }
-
-    @Override
-    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-
-    }
-
-    @Override
-    public void onBitmapFailed(Drawable errorDrawable) {
-
-    }
-
-    @Override
-    public void onPrepareLoad(Drawable placeHolderDrawable) {
-
+       // Picasso.with(getApplicationContext()).load()
     }
 }

@@ -8,10 +8,12 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextPaint;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.originals.johnevans.tubonge.loginsignup.InterestsActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -54,12 +57,14 @@ public class SetPhotoActivity extends AppCompatActivity {
     public static Uri uri1;
     static Bitmap photo;
     static Bitmap photophoto;
+    SharedPreferences preferences;
+    Button ok;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_photo);
-        final Context context = this;
+        preferences = getSharedPreferences("user_pref", MODE_PRIVATE);
 
         setPhoto = (ImageView) findViewById(R.id.imageView);
         imageView2 = (ImageView) findViewById(R.id.imageView2);
@@ -71,16 +76,9 @@ public class SetPhotoActivity extends AppCompatActivity {
                 Intent takePhoto = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePhoto.resolveActivity(getPackageManager()) != null) {
                     File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-                   /* if (new File(file, "my_icon_tubongee.jpg").exists()) {
-                        if (new File(file, "my_icon_tubongee.jpg").delete()) {
-                            Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-                    File imageFile = new File(file, "my_icon_tubongee.jpg");*/
-                   File imageFile = null;
+                    File imageFile = null;
                     try {
-                        imageFile = File.createTempFile("icon", ".jpg", file);
+                        imageFile = File.createTempFile("tubonge_icon", ".jpg", file);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -93,6 +91,14 @@ public class SetPhotoActivity extends AppCompatActivity {
                 }
             }
         });
+
+        ok = (Button) findViewById(R.id.ok_set_photo);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SetPhotoActivity.this, InterestsActivity.class));
+            }
+        });
     }
 
     @Override
@@ -103,10 +109,24 @@ public class SetPhotoActivity extends AppCompatActivity {
         }
         File imageFile = new File(uri1.getPath());
         Bitmap image = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
-        imageView2.setImageBitmap(image);
+        //imageView2.setImageBitmap(image);
+
 
         String imageString = getStringImage(image);
         uploadImage(imageString);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences preferences = getSharedPreferences("user_pref",MODE_PRIVATE);
+                String userid = preferences.getString("userid", null);
+                String iconPath = preferences.getString("iconPath", null);
+                Picasso.with(getApplicationContext())
+                       .load(iconPath)
+                       .error(R.drawable.ble)
+                       .into(imageView2);
+            }
+        }, 2000);
     }
 
     public String getStringImage(Bitmap b) {
@@ -123,7 +143,18 @@ public class SetPhotoActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    boolean error = jsonResponse.getBoolean("error");
+                    Toast.makeText(getApplicationContext(), ""+error, Toast.LENGTH_LONG).show();
+                    String iconPath = jsonResponse.getJSONObject("user").getString("icon_path");
+                    Log.e("icon_path", iconPath);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("iconPath", iconPath);
+                    editor.commit();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
