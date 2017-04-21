@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,33 +37,38 @@ import java.util.List;
 
 public class InterestsActivity extends AppCompatActivity{
 
-    static ArrayList<InterestObject> interestArray;
     ImageView imageView;
     TextView textView;
     ListView listView;
+    ArrayList<InterestObject> interestObjects;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interests);
 
-        interestArray = getInterestsArrays();
+        interestObjects = new ArrayList<>();
+        interestObjects = getInterestsArrays();
 
-        /*for (int i = 0; i<interestArray.size(); i++) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(interestArray.get(i));
-            Log.e("array", stringBuilder.toString());
-        }*/
-
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("john");
-        strings.add("Kamau");
         listView = (ListView) findViewById(R.id.interest_list);
-        listView.setAdapter(new InterestsAdapter(getApplicationContext(), R.layout.interest_list_format, interestArray));
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+                if (!checkBox.isChecked()) {
+                    checkBox.setChecked(true);
+                } else {
+                    checkBox.setChecked(false);
+                }
+                int interestId = interestObjects.get(position).getInterestId();
+                String name = interestObjects.get(position).getInterest();
+                Log.e("interest", name + " " +interestId);
+            }
+        });
     }
 
     public ArrayList<InterestObject> getInterestsArrays() {
+        final ArrayList<Integer> interestIds = new ArrayList<>();
         final ArrayList<String> interestNames = new ArrayList<>();
         final ArrayList<String> interestPaths = new ArrayList<>();
         final ArrayList<InterestObject> interestObjects = new ArrayList<>();
@@ -75,6 +82,11 @@ public class InterestsActivity extends AppCompatActivity{
                             JSONObject jsonResponse = new JSONObject(response);
                             JSONObject jsonInterests = jsonResponse.getJSONObject("interests");
 
+                            JSONArray idArrayJson = jsonInterests.getJSONArray("interest_id");
+                            for (int i = 0; i<idArrayJson.length(); i++) {
+                                interestIds.add(idArrayJson.getInt(i));
+                            }
+
                             JSONArray namesArrayJson = jsonInterests.getJSONArray("name");
                             for (int i = 0; i < namesArrayJson.length(); i++) {
                                 interestNames.add(namesArrayJson.getString(i));
@@ -87,9 +99,12 @@ public class InterestsActivity extends AppCompatActivity{
 
                             for (int i=0; i<interestNames.size(); i++) {
                                 interestObjects.add(
-                                    new InterestObject(interestPaths.get(i), interestNames.get(i)));
-
+                                    new InterestObject(interestIds.get(i), interestPaths.get(i), interestNames.get(i)));
                             }
+
+                            listView.setAdapter(
+                                    new InterestsAdapter(InterestsActivity.this, R.layout.interest_list_format, interestObjects)
+                            );
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -103,7 +118,7 @@ public class InterestsActivity extends AppCompatActivity{
         });
 
         requestQueue.add(request);
-        Toast.makeText(getApplicationContext(), ""+interestObjects.size(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "bleeee  "+interestObjects.size(), Toast.LENGTH_LONG).show();
         return  interestObjects;
     }
 
@@ -116,10 +131,6 @@ public class InterestsActivity extends AppCompatActivity{
             this.list = objects;
         }
 
-        public InterestsAdapter(@NonNull Context context, @LayoutRes int resource) {
-            super(context, resource);
-        }
-
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -129,10 +140,9 @@ public class InterestsActivity extends AppCompatActivity{
             }
             imageView = (ImageView) convertView.findViewById(R.id.interest_icon);
             textView = (TextView) convertView.findViewById(R.id.interest_name);
-//            InterestObject interestObject = list.get(position);
             textView.setText(list.get(position).getInterest());
             Picasso.with(getApplicationContext())
-                   .load("http://localhost/tubonge_app/interestIcons/eating/drawable-xxxhdpi/ic_local_dining_black_24dp.png")
+                   .load(list.get(position).getIconPath())
                    .error(R.drawable.ble)
                    .into(imageView);
 

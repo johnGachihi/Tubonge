@@ -7,10 +7,25 @@ package com.originals.johnevans.tubonge;
 public class InterestObject {
 
     String iconPath, interest;
+    int interestId;
+
+    public InterestObject(int interestId, String iconPath, String interest) {
+        this.interestId = interestId;
+        this.iconPath = iconPath;
+        this.interest = interest;
+    }
 
     public InterestObject(String iconPath, String interest) {
         this.iconPath = iconPath;
         this.interest = interest;
+    }
+
+    public int getInterestId() {
+        return interestId;
+    }
+
+    public void setInterestId(int interestId) {
+        this.interestId = interestId;
     }
 
     public String getIconPath() {
