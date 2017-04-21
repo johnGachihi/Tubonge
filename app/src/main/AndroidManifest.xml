@@ -3,8 +3,8 @@
     package="com.originals.johnevans.tubonge">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -25,22 +25,19 @@
             android:label="Sign up" />
         <activity android:name=".loginsignup.SignUpActivity" />
         <activity android:name=".SetPhotoActivity" />
-        <activity android:name=".loginsignup.MainActivity">
+        <activity android:name=".loginsignup.MainActivity"></activity>
 
-        </activity>
-        
         <provider
-            android:authorities="com.originals.johnevans.tubonge"
             android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.originals.johnevans.tubonge"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-
-            </meta-data>
+                android:resource="@xml/file_paths"></meta-data>
         </provider>
+
+        <activity android:name=".SuggestionsActivity"></activity>
     </application>
 
 </manifest>

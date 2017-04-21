@@ -1,6 +1,7 @@
 package com.originals.johnevans.tubonge.loginsignup;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -28,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.originals.johnevans.tubonge.InterestObject;
 import com.originals.johnevans.tubonge.R;
+import com.originals.johnevans.tubonge.SuggestionsActivity;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -46,6 +49,7 @@ public class InterestsActivity extends AppCompatActivity{
     ListView listView;
     ArrayList<InterestObject> interestObjects = new ArrayList<>();
     RequestQueue requestQueue;
+    Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +58,7 @@ public class InterestsActivity extends AppCompatActivity{
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         interestObjects = getInterestsArrays();
+        final ArrayList<Integer> ids = new ArrayList<>();
 
         listView = (ListView) findViewById(R.id.interest_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,12 +67,29 @@ public class InterestsActivity extends AppCompatActivity{
                 CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
                 if (!checkBox.isChecked()) {
                     checkBox.setChecked(true);
+                    addInterestToArray(interestObjects.get(position), ids);
                 } else {
                     checkBox.setChecked(false);
+                    removeInterestFromArray(interestObjects.get(position), ids);
                 }
-                int interestId = interestObjects.get(position).getInterestId();
-                String name = interestObjects.get(position).getInterest();
-                Log.e("interest", name + " " +interestId);
+
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i<ids.size(); i++) {
+                    builder.append(ids.get(i) + " ");
+                }
+                Log.e("ids", builder.toString());
+            }
+        });
+
+        button = (Button) findViewById(R.id.next_InterestsActivity);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ids.size() > 0) {
+                    postInterests(ids);
+                }
+                startActivity(new Intent(InterestsActivity.this, SuggestionsActivity.class));
             }
         });
     }
@@ -126,43 +148,68 @@ public class InterestsActivity extends AppCompatActivity{
         return  interestObjects;
     }
 
-    public ArrayList<Integer> addInterestsToArray(InterestObject interestObject) {
+    public void addInterestToArray(InterestObject interestObject, ArrayList<Integer> ids) {
         int interestId = interestObject.getInterestId();
-        ArrayList<Integer> interestIds = new ArrayList<>();
-        interestIds.add(interestId);
-        return interestIds;
+        if (ids.indexOf(interestId) == -1) {
+            ids.add(interestId);
+        }
+    }
+
+    public void removeInterestFromArray(InterestObject interestObject, ArrayList<Integer> ids) {
+        int interestId = interestObject.getInterestId();
+        if (ids.indexOf(interestId) > -1) {
+            ids.remove(ids.indexOf(interestId));
+        }
     }
 
     public void postInterests(final ArrayList<Integer> interestIds) {
         SharedPreferences sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE);
         final String userid = sharedPreferences.getString("userid", null);
-
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, " ", new Response.Listener<String>() {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                "http://192.168.0.13/tubonge_app/user_interests.php",
+                new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.e("response", response);
+                try {
+                    JSONObject responseJson = new JSONObject(response);
+                   /* boolean error = responseJson.getBoolean("error");
+                    if (error) {
+                        //String message = responseJson.getString("error_message");
+                        Toast.makeText(getApplicationContext(), "true", Toast.LENGTH_LONG).show();
+                    }*/
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("userid", userid);
+//                params.put("interestid[0]", "12345");
+//                params.put("interestids[1]", "67890");
                 for (int i = 0; i<interestIds.size(); i++) {
-                    params.put("interestid[" + i + "]", "" + interestIds.get(i));
+                    params.put("interestids[" + i + "]", "" + interestIds.get(i));
                 }
-                return super.getParams();
+//                StringBuilder stringBuilder = new StringBuilder(interestids[1]);
+                return params;
             }
         };
+
+        requestQueue.add(stringRequest);
     }
 
     class InterestsAdapter extends ArrayAdapter{
-
         List<InterestObject> list = new ArrayList<>();
 
         InterestsAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List objects) {
