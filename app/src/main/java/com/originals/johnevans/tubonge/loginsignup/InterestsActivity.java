@@ -1,6 +1,7 @@
 package com.originals.johnevans.tubonge.loginsignup;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -33,21 +35,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InterestsActivity extends AppCompatActivity{
 
     ImageView imageView;
     TextView textView;
     ListView listView;
-    ArrayList<InterestObject> interestObjects;
+    ArrayList<InterestObject> interestObjects = new ArrayList<>();
+    RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interests);
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
 
-        interestObjects = new ArrayList<>();
         interestObjects = getInterestsArrays();
 
         listView = (ListView) findViewById(R.id.interest_list);
@@ -72,7 +77,6 @@ public class InterestsActivity extends AppCompatActivity{
         final ArrayList<String> interestNames = new ArrayList<>();
         final ArrayList<String> interestPaths = new ArrayList<>();
         final ArrayList<InterestObject> interestObjects = new ArrayList<>();
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest request = new StringRequest(Request.Method.POST,
                 "http://192.168.0.13/tubonge_app/interests_get.php",
                 new Response.Listener<String>() {
@@ -120,6 +124,41 @@ public class InterestsActivity extends AppCompatActivity{
         requestQueue.add(request);
         Toast.makeText(getApplicationContext(), "bleeee  "+interestObjects.size(), Toast.LENGTH_LONG).show();
         return  interestObjects;
+    }
+
+    public ArrayList<Integer> addInterestsToArray(InterestObject interestObject) {
+        int interestId = interestObject.getInterestId();
+        ArrayList<Integer> interestIds = new ArrayList<>();
+        interestIds.add(interestId);
+        return interestIds;
+    }
+
+    public void postInterests(final ArrayList<Integer> interestIds) {
+        SharedPreferences sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE);
+        final String userid = sharedPreferences.getString("userid", null);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, " ", new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("userid", userid);
+                for (int i = 0; i<interestIds.size(); i++) {
+                    params.put("interestid[" + i + "]", "" + interestIds.get(i));
+                }
+                return super.getParams();
+            }
+        };
     }
 
     class InterestsAdapter extends ArrayAdapter{
