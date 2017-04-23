@@ -86,10 +86,12 @@ public class InterestsActivity extends AppCompatActivity{
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               // Intent intent =new Intent(InterestsActivity.this, SuggestionsActivity.class);
                 if (ids.size() > 0) {
                     postInterests(ids);
+                   // SharedPreferences preferences = getSharedPreferences("user_pref", MODE_PRIVATE);
                 }
-                startActivity(new Intent(InterestsActivity.this, SuggestionsActivity.class));
+               // startActivity(intent);
             }
         });
     }
@@ -168,18 +170,16 @@ public class InterestsActivity extends AppCompatActivity{
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                "http://192.168.0.13/tubonge_app/user_interests.php",
+                "http://192.168.0.13/tubonge_app/SimilarInteresteers.php",
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.e("response", response);
+                Log.e("response "+ getClass().getName(), response);
+                Intent intent = new Intent(InterestsActivity.this, SuggestionsActivity.class);
+                intent.putExtra("jsonResponse", response);
                 try {
-                    JSONObject responseJson = new JSONObject(response);
-                   /* boolean error = responseJson.getBoolean("error");
-                    if (error) {
-                        //String message = responseJson.getString("error_message");
-                        Toast.makeText(getApplicationContext(), "true", Toast.LENGTH_LONG).show();
-                    }*/
+                    JSONArray responseJson = new JSONArray(response);
+                    startActivity(intent);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
