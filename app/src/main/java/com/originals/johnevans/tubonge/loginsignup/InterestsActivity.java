@@ -50,12 +50,14 @@ public class InterestsActivity extends AppCompatActivity{
     ArrayList<InterestObject> interestObjects = new ArrayList<>();
     RequestQueue requestQueue;
     Button button;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interests);
         requestQueue = Volley.newRequestQueue(getApplicationContext());
+        intent = new Intent(InterestsActivity.this, SuggestionsActivity.class);
 
         interestObjects = getInterestsArrays();
         final ArrayList<Integer> ids = new ArrayList<>();
@@ -86,12 +88,9 @@ public class InterestsActivity extends AppCompatActivity{
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // Intent intent =new Intent(InterestsActivity.this, SuggestionsActivity.class);
                 if (ids.size() > 0) {
                     postInterests(ids);
-                   // SharedPreferences preferences = getSharedPreferences("user_pref", MODE_PRIVATE);
                 }
-               // startActivity(intent);
             }
         });
     }
@@ -167,7 +166,6 @@ public class InterestsActivity extends AppCompatActivity{
     public void postInterests(final ArrayList<Integer> interestIds) {
         SharedPreferences sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE);
         final String userid = sharedPreferences.getString("userid", null);
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 "http://192.168.0.13/tubonge_app/SimilarInteresteers.php",
@@ -196,17 +194,15 @@ public class InterestsActivity extends AppCompatActivity{
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("userid", userid);
-//                params.put("interestid[0]", "12345");
-//                params.put("interestids[1]", "67890");
                 for (int i = 0; i<interestIds.size(); i++) {
                     params.put("interestids[" + i + "]", "" + interestIds.get(i));
                 }
-//                StringBuilder stringBuilder = new StringBuilder(interestids[1]);
                 return params;
             }
         };
-
         requestQueue.add(stringRequest);
+
+
     }
 
     class InterestsAdapter extends ArrayAdapter{

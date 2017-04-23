@@ -9,7 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,10 +34,12 @@ public class SuggestionsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String response = intent.getStringExtra("jsonResponse");
-        Log.e("response " + getClass().getName(), response);
+//        Log.e("response " + getClass().getName(), response);
 
         try {
             mateArrayList = getArraylistFromArray(intent);
+            MatesAdapter matesAdapter = new MatesAdapter(mateArrayList);
+            gridView.setAdapter(matesAdapter);
         } catch (JSONException e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -81,9 +87,19 @@ public class SuggestionsActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
-                inflater.inflate()
+                convertView = inflater.inflate(R.layout.mates_format, parent, false);
             }
-            return null;
+
+            ImageView mateIcon = (ImageView) convertView.findViewById(R.id.mate_icon);
+            Picasso.with(getApplicationContext())
+                   .load(mates.get(position).getIcon_path())
+                   .placeholder(R.drawable.ble)
+                   .into(mateIcon);
+
+            TextView textView = (TextView) convertView.findViewById(R.id.mate_username);
+            textView.setText(mates.get(position).getUsername());
+
+            return convertView;
         }
     }
 }
