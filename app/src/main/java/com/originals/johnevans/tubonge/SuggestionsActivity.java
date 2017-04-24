@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -32,7 +33,7 @@ public class SuggestionsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_suggestions);
         gridView = (GridView) findViewById(R.id.suggested_users_grid);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         String response = intent.getStringExtra("jsonResponse");
 //        Log.e("response " + getClass().getName(), response);
 
@@ -44,6 +45,15 @@ public class SuggestionsActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
         }
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent1 = new Intent(SuggestionsActivity.this, ChatRoom.class);
+                intent1.putExtra("mate iconPath", mateArrayList.get(position).getIcon_path())
+                        .putExtra("mate username", mateArrayList.get(position).getUsername());
+                startActivity(intent1);
+            }
+        });
     }
 
     public ArrayList<Mate> getArraylistFromArray(Intent intent) throws JSONException {
