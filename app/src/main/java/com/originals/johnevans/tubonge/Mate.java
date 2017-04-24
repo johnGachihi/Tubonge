@@ -9,11 +9,28 @@ public class Mate {
     private String username;
     private String icon_path;
     private int similar_interest;
+    private String userid;
 
     public Mate(String username, String icon_path, int similar_interest) {
         this.username = username;
         this.icon_path = icon_path;
         this.similar_interest = similar_interest;
+    }
+
+    public Mate(String username, String icon_path, int similar_interest, String userid) {
+        this.username = username;
+        this.icon_path = icon_path;
+        this.similar_interest = similar_interest;
+        this.userid = userid;
+
+    }
+
+    public String getUserid() {
+        return userid;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {

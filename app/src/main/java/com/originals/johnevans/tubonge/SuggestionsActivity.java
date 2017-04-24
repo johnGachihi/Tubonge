@@ -50,7 +50,9 @@ public class SuggestionsActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent1 = new Intent(SuggestionsActivity.this, ChatRoom.class);
                 intent1.putExtra("mate iconPath", mateArrayList.get(position).getIcon_path())
-                        .putExtra("mate username", mateArrayList.get(position).getUsername());
+                       .putExtra("mate username", mateArrayList.get(position).getUsername())
+                       .putExtra("mate id", mateArrayList.get(position).getUserid());
+                Toast.makeText(getApplicationContext(), mateArrayList.get(position).getUserid(), Toast.LENGTH_LONG).show();
                 startActivity(intent1);
             }
         });
@@ -64,8 +66,9 @@ public class SuggestionsActivity extends AppCompatActivity {
             JSONObject jsonMate = responseArray.getJSONObject(i);
             String username = jsonMate.getString("username");
             String iconPath = jsonMate.getString("icon_path");
+            String userid = jsonMate.getString("userid");
             int similarInterests = jsonMate.getInt("similar_interests");
-            mateArrayList.add(new Mate(username, iconPath, similarInterests));
+            mateArrayList.add(new Mate(username, iconPath, similarInterests, userid));
         }
         return mateArrayList;
     }
