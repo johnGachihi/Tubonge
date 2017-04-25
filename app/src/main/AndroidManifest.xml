@@ -13,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".loginsignup.InterestsActivity">
+        <activity android:name=".loginsignup.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,10 +22,13 @@
         </activity>
         <activity
             android:name=".loginsignup.LoginActivity"
-            android:label="Sign up" />
-        <activity android:name=".loginsignup.SignUpActivity" />
-        <activity android:name=".SetPhotoActivity" />
-        <activity android:name=".loginsignup.MainActivity" />
+            android:label="Sign in" />
+        <activity android:name=".loginsignup.SignUpActivity"
+            android:label="Register"/>
+        <activity android:name=".SetPhotoActivity"
+            android:label="Set your profile photo"/>
+        <activity android:name=".loginsignup.InterestsActivity"
+            android:label="Choose an interest !"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

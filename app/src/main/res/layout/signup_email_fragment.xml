@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="0dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="9dp"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -56,32 +56,36 @@
         app:layout_constraintLeft_toLeftOf="@+id/password"
         app:layout_constraintRight_toRightOf="@+id/password"
         app:layout_constraintTop_toBottomOf="@+id/password"
-        app:layout_constraintVertical_bias="0.043" />
+        app:layout_constraintVertical_bias="0.044" />
 
     <TextView
         android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/signup_email"
         style="@style/forTextviews"
-        android:layout_marginBottom="31dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:textColor="#000000"
         app:layout_constraintBottom_toTopOf="@+id/Email"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.538" />
 
     <Button
         android:id="@+id/next2"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="32dp"
+        android:background="@color/colorPrimary"
         android:text="next"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintLeft_toLeftOf="@+id/confPassword"
+        app:layout_constraintTop_toBottomOf="@+id/confPassword"
+        android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="@+id/confPassword"
-        app:layout_constraintTop_toBottomOf="@+id/confPassword" />
+        app:layout_constraintHorizontal_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>

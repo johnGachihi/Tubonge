@@ -1,5 +1,6 @@
 package com.originals.johnevans.tubonge.loginsignup;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentTransaction;
@@ -35,17 +36,18 @@ public class SignUpActivity extends AppCompatActivity
     static String ausername;
     static String aemail;
     static String apassword;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_activity);
+        progressDialog = new ProgressDialog(SignUpActivity.this);
 
         SignUpNamesFragment fragment = new SignUpNamesFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.signup_activity, fragment, "first")
-                   .addToBackStack(null)
                    .commit();
     }
 
@@ -59,6 +61,10 @@ public class SignUpActivity extends AppCompatActivity
 
     @Override
     public void getDataFromFragment(String email, String password) {
+
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
         aemail = email;
         apassword = password;
         Log.e("email, password", aemail + apassword);
@@ -79,6 +85,7 @@ public class SignUpActivity extends AppCompatActivity
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                progressDialog.dismiss();
                 Log.e("json response", response);
 
                 try {

@@ -62,10 +62,15 @@ public class SignUpEmailFragment extends Fragment {
                 String emailString = email.getText().toString();
                 String passwordString = password.getText().toString();
                 String confPassString = confPassword.getText().toString();
-                if (passwordString.equals(confPassString)) {
+                if (passwordString.equals(confPassString) && (!emailString.isEmpty() || !passwordString.isEmpty()
+                        || !confPassString.isEmpty()) && emailString.contains("@")) {
                     onNextClicked.getDataFromFragment(emailString, passwordString);
-                } else {
-                    Toast.makeText(getContext(), "Password does not match", Toast.LENGTH_SHORT).show();
+                } else if (emailString.isEmpty() || passwordString.isEmpty()|| confPassString.isEmpty()) {
+                    Toast.makeText(getContext(), "Insert your information", Toast.LENGTH_LONG).show();
+                } else if (passwordString.equals(confPassString)) {
+                    Toast.makeText(getContext(), "Passwords do not math", Toast.LENGTH_LONG).show();
+                } else if (!emailString.contains("@")) {
+                    Toast.makeText(getContext(), "Invalid email", Toast.LENGTH_LONG).show();
                 }
             }
         });

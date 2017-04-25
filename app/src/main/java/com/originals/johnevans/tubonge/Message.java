@@ -1,5 +1,8 @@
 package com.originals.johnevans.tubonge;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by John on 4/24/2017.
  */
@@ -11,15 +14,17 @@ public class Message {
     private String message;
     private String imageUri;
     private String receiverId;
+    private Date currentTime;
 
     public  Message() {}
 
-    public Message(String senderId, String iconPath, String message, String imageUri, String receiverId) {
+    public Message(String senderId, String iconPath, String message, String imageUri, String receiverId, Date currentTime) {
         this.senderId = senderId;
         this.iconPath = iconPath;
         this.message = message;
         this.imageUri = imageUri;
         this.receiverId = receiverId;
+        this.currentTime = currentTime;
     }
 
 
@@ -30,6 +35,14 @@ public class Message {
         this.receiverId = receiverId;
 
     }*/
+
+    public Date getCurrentTime() {
+        return currentTime;
+    }
+
+    public void setCurrentTime(Date currentTime) {
+        this.currentTime = currentTime;
+    }
 
     public String getReceiverId() {
         return receiverId;
