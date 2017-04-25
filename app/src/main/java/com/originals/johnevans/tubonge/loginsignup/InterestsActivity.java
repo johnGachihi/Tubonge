@@ -1,6 +1,9 @@
 package com.originals.johnevans.tubonge.loginsignup;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.LayoutRes;
@@ -90,7 +93,19 @@ public class InterestsActivity extends AppCompatActivity{
             public void onClick(View v) {
                 if (ids.size() > 0) {
                     postInterests(ids);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(InterestsActivity.this);
+                    builder.setMessage("Please choose an interest");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
+
             }
         });
     }

@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     dialog.show();
                 } else if (password.length()<4) {
                     builder.setMessage("Passord too short");
+                    builder.setCancelable(false);
                     dialog = builder.create();
                     dialog.show();
                 } else {

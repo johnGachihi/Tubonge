@@ -66,6 +66,7 @@ public class ChatRoom extends AppCompatActivity{
         mateName.setText(username);
         Picasso.with(getApplicationContext())
                 .load(iconPath)
+                .placeholder(R.drawable.user_icon)
                 .resize(100,100)
                 .centerCrop()
                 .into(mateImage);

@@ -67,7 +67,6 @@ public class SetPhotoActivity extends AppCompatActivity {
         preferences = getSharedPreferences("user_pref", MODE_PRIVATE);
 
         setPhoto = (ImageView) findViewById(R.id.imageView);
-        imageView2 = (ImageView) findViewById(R.id.imageView2);
 
         setPhoto_bt = (Button) findViewById(R.id.setPhoto_bt);
         setPhoto_bt.setOnClickListener(new View.OnClickListener() {
@@ -105,8 +104,13 @@ public class SetPhotoActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK) {
-            Picasso.with(getApplicationContext()).load(uri1).into(setPhoto);
-        }
+            Picasso.with(getApplicationContext())
+                    .load(uri1)
+                    .placeholder(R.drawable.profile_placeholder)
+                    .resize(100,100)
+                    .centerCrop()
+                    .into(setPhoto);
+
         File imageFile = new File(uri1.getPath());
         Bitmap image = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
         //imageView2.setImageBitmap(image);
@@ -114,19 +118,7 @@ public class SetPhotoActivity extends AppCompatActivity {
 
         String imageString = getStringImage(image);
         uploadImage(imageString);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                SharedPreferences preferences = getSharedPreferences("user_pref",MODE_PRIVATE);
-                String userid = preferences.getString("userid", null);
-                String iconPath = preferences.getString("iconPath", null);
-                Picasso.with(getApplicationContext())
-                       .load(iconPath)
-                       .error(R.drawable.ble)
-                       .into(imageView2);
-            }
-        }, 2000);
+        }
     }
 
     public String getStringImage(Bitmap b) {

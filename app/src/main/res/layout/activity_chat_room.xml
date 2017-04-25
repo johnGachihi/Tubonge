@@ -32,7 +32,12 @@
             android:id="@+id/mate_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="6"/>
+            android:textSize="25sp"
+            android:textColor="@color/colorPrimary"
+            android:text="test"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:layout_weight="5"/>
     </LinearLayout>
     
     <LinearLayout
@@ -52,7 +57,7 @@
             android:id="@+id/messageTxt"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
+            android:layout_weight="4"
             android:ems="10"
             android:inputType="textMultiLine" />
         
@@ -60,6 +65,8 @@
             android:id="@+id/sendBt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:text="send"
+            android:background="@color/colorPrimary"
             android:layout_weight="1"/>
     </LinearLayout>
 
