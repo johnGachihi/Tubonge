@@ -107,8 +107,8 @@ public class SuggestionsActivity extends AppCompatActivity {
             Picasso.with(getApplicationContext())
                    .load(mates.get(position).getIcon_path())
                    .placeholder(R.drawable.user_icon)
-                    .resize(100,100)
                     .centerCrop()
+                    .resize(90,90)
                    .into(mateIcon);
 
             TextView textView = (TextView) convertView.findViewById(R.id.mate_username);

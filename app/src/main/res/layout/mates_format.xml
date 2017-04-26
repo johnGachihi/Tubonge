@@ -4,17 +4,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:weightSum="1">
 
     <ImageView
         android:id="@+id/mate_icon"
-        android:layout_width="match_parent"
-        android:layout_height="71dp"
-        android:layout_weight="0.10" />
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:background="@drawable/image_view_format" />
 
     <TextView
         android:id="@+id/mate_username"
-        android:layout_width="match_parent"
+        android:layout_width="98dp"
         android:layout_height="32dp"
         android:gravity="center_horizontal"
         android:text="TextView"
