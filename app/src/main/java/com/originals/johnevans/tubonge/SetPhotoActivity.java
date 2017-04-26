@@ -131,7 +131,8 @@ public class SetPhotoActivity extends AppCompatActivity {
 
     public void uploadImage(final String imageString) {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        String url = "http://192.168.0.13/tubonge_app/IconSet.php";
+        String ip = new InformationHolder().IP;
+        String url = "http://"+ ip +"/tubonge_app/IconSet.php";
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.originals.johnevans.tubonge.InformationHolder;
 import com.originals.johnevans.tubonge.R;
 import com.originals.johnevans.tubonge.SetPhotoActivity;
 
@@ -75,7 +76,8 @@ public class SignUpActivity extends AppCompatActivity
         Log.e("registerUser", "let's see");
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         Log.e("registerUser1", "let's see");
-        final String url = "http://192.168.0.13/tubonge_app/register.php";
+        String ip = new InformationHolder().IP;
+        final String url = "http://" + ip + "/tubonge_app/register.php";
         if (requestQueue.equals(null) || requestQueue==null) {
             Log.e("requestQueue", "let's see");
         } else {
@@ -93,7 +95,6 @@ public class SignUpActivity extends AppCompatActivity
                     boolean state = jsonObject.getBoolean("error");
                     if (!state) {
                         String userid = jsonObject.getString("userid");
-                        Toast.makeText(getApplicationContext(), "you have been registered  "+userid, Toast.LENGTH_SHORT).show();
                         SharedPreferences preferences = getSharedPreferences("user_pref",MODE_PRIVATE);
                         SharedPreferences.Editor editor = preferences.edit();
                         editor.putString("userid", userid);

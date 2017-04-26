@@ -62,8 +62,8 @@ public class SignUpEmailFragment extends Fragment {
                 String emailString = email.getText().toString();
                 String passwordString = password.getText().toString();
                 String confPassString = confPassword.getText().toString();
-                if (passwordString.equals(confPassString) && (!emailString.isEmpty() || !passwordString.isEmpty()
-                        || !confPassString.isEmpty()) && emailString.contains("@")) {
+                if (passwordString.equals(confPassString) && (!emailString.isEmpty() && !passwordString.isEmpty()
+                        && !confPassString.isEmpty()) && emailString.contains("@")) {
                     onNextClicked.getDataFromFragment(emailString, passwordString);
                 } else if (emailString.isEmpty() || passwordString.isEmpty()|| confPassString.isEmpty()) {
                     Toast.makeText(getContext(), "Insert your information", Toast.LENGTH_LONG).show();

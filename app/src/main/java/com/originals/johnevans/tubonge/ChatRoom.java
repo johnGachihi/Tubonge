@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -31,7 +33,7 @@ public class ChatRoom extends AppCompatActivity{
     Button sendBt;
     ImageView mateImage;
     TextView mateName;
-    EditText message;
+    EditText messageTxt;
     ListView chatList;
     SharedPreferences preferences;
     ArrayList<Message> messageArrayList = new ArrayList<>();
@@ -45,23 +47,23 @@ public class ChatRoom extends AppCompatActivity{
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseReference = firebaseDatabase.getReference();
 
+        final DatabaseReference databaseReference1 = firebaseDatabase.getReference("messages");
+
         preferences = getSharedPreferences("user_pref", MODE_PRIVATE);
         final String userid = preferences.getString("userid", null);
 
         sendBt = (Button) findViewById(R.id.sendBt);
         mateImage = (ImageView) findViewById(R.id.mate_image);
         mateName = (TextView) findViewById(R.id.mate_name);
-        message = (EditText) findViewById(R.id.messageTxt);
+        messageTxt = (EditText) findViewById(R.id.messageTxt);
 
         String username = getIntent().getStringExtra("mate username");
         final String userid_R = getIntent().getStringExtra("mate id");
         final String iconPath = getIntent().getStringExtra("mate iconPath");
 
         chatList = (ListView) findViewById(R.id.chatlist);
-        final MessageAdapter messageAdapter = new MessageAdapter(messageArrayList);
+        final MessageAdapter messageAdapter = new MessageAdapter(messageArrayList, userid);
         chatList.setAdapter(messageAdapter);
-
-        Toast.makeText(getApplicationContext(), userid_R, Toast.LENGTH_LONG).show();
 
         mateName.setText(username);
         Picasso.with(getApplicationContext())
@@ -79,30 +81,38 @@ public class ChatRoom extends AppCompatActivity{
             public void onClick(View v) {
                 preferences = getSharedPreferences("user_pref", MODE_PRIVATE);
                 String userid = preferences.getString("userid", null);
-                String messageToSend = message.getText().toString();
+                String messageToSend = messageTxt.getText().toString();
                 Calendar calendar = Calendar.getInstance();
                 Message message = new Message(userid, iconPath, messageToSend, null, userid_R, calendar.getTime());
-                ref2push.push().setValue(message);
+                databaseReference1.push().setValue(message);
             }
         });
 
 
-        ref3push.addChildEventListener(new ChildEventListener() {
+        databaseReference1.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Message message = dataSnapshot.getValue(Message.class);
-                Log.e("database message", message.getMessage());
-                if (message.getReceiverId().equals(userid) || message.getSenderId().equals(userid)) {
-                    messageArrayList.add(message);
-                    messageAdapter.notifyDataSetChanged();
-                    if (message.getReceiverId().equals(userid)) {
+                Log.e("database messageTxt", message.getMessage());
+                if ( (message.getSenderId().equals(userid) && message.getReceiverId().equals(userid_R)) ||
+                        (message.getReceiverId().equals(userid)) && message.getSenderId().equals(userid_R) ) {
+                    /*if (messageTxt.getReceiverId().equals(userid)) {
                         gravity = "left";
                     } else {
                         gravity = "right";
-                    }
-                }
+                    }*/
+                    messageTxt.setText("");
+                    messageArrayList.add(message);
+                    messageAdapter.notifyDataSetChanged();
 
+
+                    //  if (messageTxt.getReceiverId().equals(userid) || messageTxt.getSenderId().equals(userid)) {
+
+
+                }
             }
+
+          //  }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -127,9 +137,11 @@ public class ChatRoom extends AppCompatActivity{
     class MessageAdapter extends BaseAdapter {
 
         ArrayList<Message> messageArrayList = new ArrayList<>();
+        String userid;
 
-        public MessageAdapter(ArrayList<Message> arrayList) {
+        public MessageAdapter(ArrayList<Message> arrayList, String userid) {
             this.messageArrayList = arrayList;
+            this.userid = userid;
         }
 
         @Override
@@ -155,10 +167,18 @@ public class ChatRoom extends AppCompatActivity{
             }
             TextView textView = (TextView) convertView.findViewById(R.id.the_message);
             textView.setText(messageArrayList.get(position).getMessage());
-            if (gravity.equals("right")) {
-                textView.setGravity(Gravity.RIGHT);
-            } else {
+
+            DateFormat simpleDateFormat = SimpleDateFormat.getTimeInstance();
+            String timeSent = simpleDateFormat.format(messageArrayList.get(position).getCurrentTime());
+            TextView timeTxt = (TextView) convertView.findViewById(R.id.timeTxt);
+            timeTxt.setText(timeSent);
+
+            if (messageArrayList.get(position).getReceiverId().equals(userid)) {
                 textView.setGravity(Gravity.LEFT);
+                timeTxt.setGravity(Gravity.LEFT);
+            } else {
+                textView.setGravity(Gravity.RIGHT);
+                timeTxt.setGravity(Gravity.RIGHT);
             }
 
                 return  convertView;

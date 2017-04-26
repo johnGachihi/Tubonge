@@ -28,10 +28,10 @@ public class Message {
     }
 
 
-    /*public Message(String senderId, String iconPath, String message, String receiverId) {
+    /*public Message(String senderId, String iconPath, String messageTxt, String receiverId) {
         this.senderId = senderId;
         this.iconPath = iconPath;
-        this.message = message;
+        this.messageTxt = messageTxt;
         this.receiverId = receiverId;
 
     }*/

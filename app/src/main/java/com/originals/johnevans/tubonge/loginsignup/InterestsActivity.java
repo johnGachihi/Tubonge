@@ -31,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.originals.johnevans.tubonge.InformationHolder;
 import com.originals.johnevans.tubonge.InterestObject;
 import com.originals.johnevans.tubonge.R;
 import com.originals.johnevans.tubonge.SuggestionsActivity;
@@ -115,8 +116,9 @@ public class InterestsActivity extends AppCompatActivity{
         final ArrayList<String> interestNames = new ArrayList<>();
         final ArrayList<String> interestPaths = new ArrayList<>();
         final ArrayList<InterestObject> interestObjects = new ArrayList<>();
+        String ip = new InformationHolder().IP;
         StringRequest request = new StringRequest(Request.Method.POST,
-                "http://192.168.0.13/tubonge_app/interests_get.php",
+                "http://" + ip + "/tubonge_app/interests_get.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -160,7 +162,6 @@ public class InterestsActivity extends AppCompatActivity{
         });
 
         requestQueue.add(request);
-        Toast.makeText(getApplicationContext(), "bleeee  "+interestObjects.size(), Toast.LENGTH_LONG).show();
         return  interestObjects;
     }
 
@@ -181,9 +182,10 @@ public class InterestsActivity extends AppCompatActivity{
     public void postInterests(final ArrayList<Integer> interestIds) {
         SharedPreferences sharedPreferences = getSharedPreferences("user_pref", MODE_PRIVATE);
         final String userid = sharedPreferences.getString("userid", null);
+        String ip = new InformationHolder().IP;
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                "http://192.168.0.13/tubonge_app/SimilarInteresteers.php",
+                "http://"+ ip +"/tubonge_app/SimilarInteresteers.php",
                 new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

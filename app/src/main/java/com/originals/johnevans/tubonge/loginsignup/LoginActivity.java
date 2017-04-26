@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.originals.johnevans.tubonge.InformationHolder;
 import com.originals.johnevans.tubonge.R;
 import com.originals.johnevans.tubonge.SetPhotoActivity;
 
@@ -113,7 +114,8 @@ public class LoginActivity extends AppCompatActivity {
 
     public void loginUser(final String email, final String password, final ProgressDialog progressDialog) {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = "http://192.168.0.13/tubonge_app/login.php";
+        String ip = new InformationHolder().IP;
+        String url = "http://"+ ip + "/tubonge_app/login.php";
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -130,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                         editor.putString("userid", user_userid);
                         editor.apply();
                         Log.e("userid", preferences.getString("userid", null));
-                        Toast.makeText(getApplicationContext(), "Login by: " + user_firstname, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(LoginActivity.this, InterestsActivity.class);
                         startActivity(intent);
                     } else {
@@ -144,6 +145,7 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }) {
